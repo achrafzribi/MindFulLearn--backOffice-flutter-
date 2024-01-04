@@ -30,4 +30,20 @@ class ReelsNotifier extends ChangeNotifier {
       }
     });
   }
+  deletePostComment(String postId,String commentId) {
+    PostHelper.deletePostComment(postId,commentId).then((response) {
+      if (response) {
+        Get.snackbar("Comment successfully deleted", "",
+            colorText: Colors.white,
+            backgroundColor: Colors.green,
+            icon: const Icon(Icons.done));
+        html.window.location.reload();
+      } else if (!response) {
+        Get.snackbar("Failed to delete Post", "Please try again",
+            colorText: Colors.white,
+            backgroundColor: Colors.red,
+            icon: const Icon(Icons.bookmark_remove_outlined));
+      }
+    });
+  }
 }

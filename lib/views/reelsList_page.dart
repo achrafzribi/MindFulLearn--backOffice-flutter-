@@ -48,7 +48,7 @@ class _ReelsListPageState extends State<ReelsListPage> {
                           content: reel.postContent,
                           imageUrl: reel.postPicture,
                           likes: reel.likes.length,
-                          comments: reel.comments.length,
+                          listComments: reel.comments,
                           postDate: reel.createdAt,
                           userName: reel.userName,
                           userProfileImageUrl: reel.userImage,

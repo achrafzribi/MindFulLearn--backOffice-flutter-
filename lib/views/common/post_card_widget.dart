@@ -9,7 +9,6 @@ class PostCardWidget extends StatelessWidget {
   final String content;
   final String imageUrl;
   final int likes;
-  final int comments;
   final List<Comment> listComments;
   final DateTime postDate;
   final String userName;
@@ -22,7 +21,6 @@ class PostCardWidget extends StatelessWidget {
     required this.content,
     required this.imageUrl,
     required this.likes,
-    required this.comments,
     required this.postDate,
     required this.userName,
     required this.userProfileImageUrl,
@@ -75,7 +73,7 @@ class PostCardWidget extends StatelessWidget {
                   children: [
                     Text('Likes: $likes'),
                     DropdownButton<Comment>(
-                      hint: Text('Comments : $comments'),
+                      hint: Text('Comments : ${listComments.length}'),
                       value: null, // Initially no value is selected
                       onChanged: (Comment? selectedComment) {
                         // Handle the selected comment

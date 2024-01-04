@@ -1,17 +1,21 @@
+import 'dart:html';
+
 import 'package:chewie/chewie.dart';
 import 'package:flutter/material.dart';
 import 'package:mindfullearn_dashboard/controllers/posts_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:reels_viewer/reels_viewer.dart';
 import 'package:video_player/video_player.dart';
+import 'package:mindfullearn_dashboard/models/response/getPosts_model_res.dart';
 
-class ReelCardWidget extends StatefulWidget {
+class ReelCardWidget extends StatelessWidget {
   final String id;
   final String title;
   final String content;
   final String imageUrl;
   final int likes;
-  final int comments;
+  final List<Comment> listComments;
+
   final DateTime postDate;
   final String userName;
   final String userProfileImageUrl;
@@ -23,17 +27,13 @@ class ReelCardWidget extends StatefulWidget {
     required this.content,
     required this.imageUrl,
     required this.likes,
-    required this.comments,
     required this.postDate,
     required this.userName,
     required this.userProfileImageUrl,
+    required this.listComments,
+
   });
 
-  @override
-  State<ReelCardWidget> createState() => _ReelCardWidgetState();
-}
-
-class _ReelCardWidgetState extends State<ReelCardWidget> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -47,14 +47,14 @@ class _ReelCardWidgetState extends State<ReelCardWidget> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Post Image
-              widget.imageUrl.isNotEmpty
+              imageUrl.isNotEmpty
                   ? SizedBox(
                       height: 300,
                       width: 400,
                       child: Chewie(
                         controller: ChewieController(
                           videoPlayerController:
-                              VideoPlayerController.network(widget.imageUrl),
+                              VideoPlayerController.network(imageUrl),
                           autoPlay: false,
                           looping: true,
                         ),
@@ -66,7 +66,7 @@ class _ReelCardWidgetState extends State<ReelCardWidget> {
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Text(
-                  widget.title,
+                  title,
                   style: const TextStyle(
                       fontSize: 20, fontWeight: FontWeight.bold),
                 ),
@@ -75,7 +75,7 @@ class _ReelCardWidgetState extends State<ReelCardWidget> {
               // Post Content
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Text(widget.content),
+                child: Text(content),
               ),
 
               // Post Details (Likes, Comments, Date)
@@ -84,9 +84,33 @@ class _ReelCardWidgetState extends State<ReelCardWidget> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('Likes: ${widget.likes}'),
-                    Text('Comments: ${widget.comments}'),
-                    Text('Date: ${widget.postDate.toLocal()}'),
+                    Text('Likes: $likes'),
+                    DropdownButton<Comment>(
+                      hint: Text('Comments : ${listComments.length}'),
+                      value: null, // Initially no value is selected
+                      onChanged: (Comment? selectedComment) {
+                        // Handle the selected comment
+                        print(selectedComment!.id);
+                      },
+                      items: listComments.map((Comment comment) {
+                        return DropdownMenuItem<Comment>(
+                          value: comment,
+                          child: SizedBox(
+                            width: 500,
+                            child: ListTile(
+                              title: Text(comment.user),
+                              subtitle: Text(comment.content),
+                              leading: const CircleAvatar(),
+                              trailing:  IconButton(
+                                  onPressed: () => psotNotifier.deletePostComment(id,comment.id),
+                                  icon: const Icon(Icons.delete))
+
+                            ),
+                          ),
+                        );
+                      }).toList(),
+                    ),
+                    Text('Date: ${postDate.toLocal()}'),
                   ],
                 ),
               ),
@@ -97,11 +121,11 @@ class _ReelCardWidgetState extends State<ReelCardWidget> {
                 child: Row(
                   children: [
                     CircleAvatar(
-                      backgroundImage: NetworkImage(widget.userProfileImageUrl),
+                      backgroundImage: NetworkImage(userProfileImageUrl),
                       radius: 20,
                     ),
                     const SizedBox(width: 10),
-                    Text(widget.userName),
+                    Text(userName),
                   ],
                 ),
               ),
@@ -109,7 +133,7 @@ class _ReelCardWidgetState extends State<ReelCardWidget> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   IconButton(
-                      onPressed: () => psotNotifier.deletePost(widget.id),
+                      onPressed: () => psotNotifier.deletePost(id),
                       icon: const Icon(Icons.delete))
                 ],
               )

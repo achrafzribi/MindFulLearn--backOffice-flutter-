@@ -45,7 +45,7 @@ class _PostsListPageState extends State<PostsListPage> {
                           content: post.postContent,
                           imageUrl: post.postPicture,
                           likes: post.likes.length,
-                          comments: post.comments.length,
+
                           postDate: post.createdAt,
                           userName: post.userName,
                           userProfileImageUrl: post.userImage,

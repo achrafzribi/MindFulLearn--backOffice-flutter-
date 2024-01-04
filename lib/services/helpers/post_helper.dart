@@ -43,4 +43,21 @@ class PostHelper {
       return false;
     }
   }
+  static Future<bool> deletePostComment(String postId,String CommentID) async {
+    Map<String, String> requestHeaders = {
+      'Content-Type': 'application/json',
+    };
+
+    var url = Uri.https(Config.apiUrl, "${Config.postUrl}/$postId/comments/$CommentID");
+    var response = await client.delete(
+      url,
+      headers: requestHeaders,
+    );
+
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 }
